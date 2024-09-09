@@ -21,7 +21,6 @@ void print_file  (FILE *encyclopedia, char compuscript[][Columns]);
 
 
 
-
 int main (int argc, char* argv[])
 {
     //char Huge[100000] = {};
@@ -54,6 +53,12 @@ int main (int argc, char* argv[])
 
     printf ("Отсортировал файл\n");
     print_file  (out, Onegin);
+
+
+    fclose (in);
+    fclose (out);
+
+    return (0);
     
 }
 
@@ -92,7 +97,7 @@ void stupid_sort (char Onegin[][Columns], int size)
     {   
         char challanger[Columns] = {};
         stupid_copy (challanger, Onegin[0]);
-        for (int i = 0; i < size-1; i++)
+        for (int i = 0; i < size; i++)
         {
             
             if (stupid_compare (Onegin[i], challanger) > 0)
@@ -103,17 +108,17 @@ void stupid_sort (char Onegin[][Columns], int size)
                 stupid_copy (Onegin[i], intermediary);
             }
             //printf ("challanger: %s, intermedia: %s, Onegin[%d]:%s\n", challanger, 
-                    //intermediary, i, Onegin[i]);
+                   //  intermediary, i, Onegin[i]);
         }
-        if (stupid_compare (Onegin[size-1], challanger) > 0)
+        if (stupid_compare (Onegin[size], challanger) > 0)
         {    
             stupid_copy (Onegin[0], challanger );
         }
 
         else
         {
-            stupid_copy (Onegin[0], Onegin[size-1]);
-            stupid_copy (Onegin[size-1], challanger);
+            stupid_copy (Onegin[0], Onegin[size]);
+            stupid_copy (Onegin[size], challanger);
         }
     }
 
@@ -135,12 +140,14 @@ void check_open (FILE** ptr, const char *name, const char *mode)
 int read_file (FILE *manuscript, char compuscript[][Columns])
 {
     int i = 0;
-    for (;feof (manuscript) == 0; i++)
+    int ch = 0; 
+    for (; (ch = getc(manuscript))!= EOF; i++)
     {
+            ungetc (ch, manuscript);
             fgets (compuscript [i], Columns, manuscript);
             //fputs (compuscript[i], stdout);
-
     }
+    //while (compuscript[i-1] )
     stupid_copy (compuscript[i], "END_OF_TEXT");
     return (i - 1);
 }
